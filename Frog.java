@@ -1,70 +1,86 @@
 import greenfoot.*;
+import java.util.ArrayList;
 
 public class Frog extends Actor
 {
     private int moveSpeed;
-    private int score;
     private GreenfootImage l = new GreenfootImage("frogL.png");
     private GreenfootImage r = new GreenfootImage("frog.png");
+    
     public Frog()
     {
-        moveSpeed = 2;
-        score = 0;
+        moveSpeed = 3;
     }
+    
     public void act()
     {
         makeMeMove();
         World w = this.getWorld();
-        w.showText("Score: " + score, 50, 20);
-        w.showText("Speed: " + moveSpeed, 50, 50);
+        w.showText("Speed: " + moveSpeed, 50, w.getHeight()-50);
         if(isTouching(Flower.class))
         {
             removeTouching(Flower.class);
-            score++;
-            w.showText("Score: " + score, 50, 20);
+            int x = Greenfoot.getRandomNumber(w.getWidth())+1;
+            int y = Greenfoot.getRandomNumber(w.getHeight())+1;
+            w.addObject(new Frog(), x, y);
+            
         }
-        if(score%10==0 && !(score==0))
+        if(isTouching(Anchor.class))
         {
-            score = 0;
-            moveSpeed++;
+            w.removeObject(this);
+        }
+        if(w.getObjects(Frog.class).size() == 0){
+            w.showText("GAME OVER", w.getWidth()/2, w.getHeight()/2);
+            
+            Greenfoot.stop();
         }
     }
     public void makeMeMove()
     {
+        World w = this.getWorld();
+        
         if(Greenfoot.isKeyDown("w"))
         {
             setRotation(270);
             move(moveSpeed);
         }
-        if(Greenfoot.isKeyDown("a"))
+        else if(Greenfoot.isKeyDown("a"))
         {
             this.setImage(l);
             setRotation(180);
             move(moveSpeed);
         }
-        if(Greenfoot.isKeyDown("s"))
+        else if(Greenfoot.isKeyDown("s"))
         {
             setRotation(90);
             move(moveSpeed);
         }
-        if(Greenfoot.isKeyDown("d"))
+        else if(Greenfoot.isKeyDown("d"))
         {
             this.setImage(r);
             setRotation(0);
             move(moveSpeed);
         }
+        if(this.getY() == 0)
+            this.setLocation(this.getX(), w.getHeight()-2);
+        if(this.getX() == 0)
+            this.setLocation(w.getWidth()-2,this.getY());
+        if(this.getY() == w.getHeight()-1)
+            this.setLocation(this.getX(),0);
+        if(this.getX() == w.getWidth()-1)
+                this.setLocation(0,this.getY());
         if(Greenfoot.isKeyDown("4"))
         {
-            moveSpeed=50;
+            moveSpeed++;
         }
         if(Greenfoot.isKeyDown("5"))
         {
-            moveSpeed=2;
+            moveSpeed--;
         }
-        World w = this.getWorld();
-        if(this.getX()==0)
-            setLocation(w.getWidth()-2, this.getY());
-        if(this.getX()==w.getWidth()-1)
-            setLocation(1, this.getY());
+        
+        if(Greenfoot.isKeyDown("2"))
+        {
+            moveSpeed = 3;
+        }
     }
 }
